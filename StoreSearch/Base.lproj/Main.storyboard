@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Search View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="StoreSearch" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SearchViewController" customModule="StoreSearch" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,12 +15,45 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="PWl-fa-BId">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="2Hx-sF-VbW"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Ib7-4n-GNj"/>
+                                </connections>
+                            </tableView>
+                            <searchBar contentMode="redraw" placeholder="App name, artist, song, album, e-book" translatesAutoresizingMaskIntoConstraints="NO" id="Vdg-Gn-gwz">
+                                <rect key="frame" x="0.0" y="24" width="600" height="44"/>
+                                <animations/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="VO5-0b-Udv"/>
+                                </connections>
+                            </searchBar>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Vdg-Gn-gwz" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="24" id="8kQ-by-aYA"/>
+                            <constraint firstItem="PWl-fa-BId" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Dd7-KH-el2"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="PWl-fa-BId" secondAttribute="bottom" id="JyF-D9-6St"/>
+                            <constraint firstItem="PWl-fa-BId" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Vzd-zj-Tik"/>
+                            <constraint firstItem="Vdg-Gn-gwz" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="ZzI-8k-Whl"/>
+                            <constraint firstAttribute="trailing" secondItem="PWl-fa-BId" secondAttribute="trailing" id="iRw-Fm-dAg"/>
+                            <constraint firstAttribute="trailing" secondItem="Vdg-Gn-gwz" secondAttribute="trailing" id="zf4-K9-Ysb"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="searchBar" destination="Vdg-Gn-gwz" id="Plf-Ds-Frt"/>
+                        <outlet property="tableView" destination="PWl-fa-BId" id="xfK-L6-OCv"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="479" y="387"/>
         </scene>
     </scenes>
 </document>
