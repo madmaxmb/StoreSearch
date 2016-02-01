@@ -75,18 +75,69 @@ class SearchViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func performStoreRequestWithURL(url: NSURL) -> String? {
+        do {
+            return try String(contentsOfURL: url, encoding: NSUTF8StringEncoding)
+        } catch {
+            print("Downland error \(error)")
+            return nil
+        }
+    }
+    
+    func urlWithSearchText(searchText: String) -> NSURL {
+        let escapedSearchText = searchText.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let urlInString = String(format: "http://itunes.apple.com/search?term=%@", escapedSearchText)
+        let url = NSURL(string: urlInString)
+        return url!
+    }
+    
+    func parseJSON(jsonString: String) -> [String: AnyObject]? {
+        guard let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)
+            else {
+                return nil
+        }
+        do {
+            return try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject]
+        } catch {
+            print("JSON Error: \(error)")
+            return nil
+        }
+    }
+    
+    func showNetworkError() {
+        if #available(iOS 8.0, *) {
+            let alert = UIAlertController(title: "Whoops...", message: "There was an error reading from the iTunes Store. Please try again.", preferredStyle: .Alert)
+            let action = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+            alert.addAction(action)
+            
+            presentViewController(alert, animated: true, completion: nil)
+        } else {
+            // Fallback on earlier versions
+            let alert = UIAlertView(title: "Whoops...", message: "There was an error reading from the iTunes Stire. Please try again.", delegate: self, cancelButtonTitle: "Ok")
+            alert.alertViewStyle = .Default //UIAlertViewStyle.PlainTextInput
+            alert.show()
+        }
+        
+    }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        searchResults.removeAll()
-        if (searchBar.text! != "EmptyQuery") {
-            searchResults.append(SearchResult(name: "Some name", artistName: searchBar.text!))
-        } else {
-            searchResults.append(NoFoundResult())
+        if !searchBar.text!.isEmpty {
+            searchBar.resignFirstResponder()
+            searchResults.removeAll()
+            let url = urlWithSearchText(searchBar.text!)
+            if let queryResultInJsonString = performStoreRequestWithURL(url) {
+                if let dictionary = parseJSON(queryResultInJsonString) {
+                    print("Dictionary: \(dictionary)")
+                    tableView.reloadData()
+                }
+                return
+            }
+            
+            showNetworkError()
         }
-        tableView.reloadData()
     }
     
     func positionForBar(bar: UIBarPositioning) -> UIBarPosition {
