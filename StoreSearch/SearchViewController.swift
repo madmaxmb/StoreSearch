@@ -9,29 +9,204 @@
 import UIKit
 
 protocol Result {
+    var kind:String {get}
     func getName() -> String
     func getArtistName() -> String
     func isNoFound() -> Bool
+    func getKindForDisplay() -> String
+}
+
+extension Result {
+    func getArtistName() -> String {
+        return ""
+    }
+    func getKindForDisplay() -> String {
+        switch self.kind {
+            case "album": return "Album"
+            case "audiobook": return "Audio Book"
+            case "book": return "Book"
+            case "ebook": return "E-Book"
+            case "feature-movie": return "Movie"
+            case "music-video": return "Music Video"
+            case "podcast": return "Podcast"
+            case "software": return "App"
+            case "song": return "Song"
+            case "tv-episode": return "TV Episode"
+        default: return self.kind
+        }
+    }
 }
 
 class NoFoundResult: Result {
+    internal var kind = ""
     func getName() -> String {
         return "(Nothing found)"
-    }
-    func getArtistName() -> String {
-        return ""
     }
     func isNoFound() -> Bool {
         return true
     }
 }
 
-class SearchResult: Result {
+class TrackResult: Result {
     private var name: String
     private var artistName: String
-    init(name: String, artistName: String){
-        self.name = name
-        self.artistName = artistName
+    private var artworkURL60: String
+    private var artworkURL100: String
+    private var storeURL: String
+    internal var kind: String
+    private var currency: String
+    private var price: Double
+    private var genre: String
+    
+    init(dictionary: [String: AnyObject]){
+        self.name = dictionary["trackName"] as! String
+        self.artistName = dictionary["artistName"] as! String
+        self.artworkURL60 = dictionary["artworkUrl60"] as! String
+        self.artworkURL100 = dictionary["artworkUrl100"] as! String
+        self.storeURL = dictionary["trackViewUrl"] as! String
+        self.kind = dictionary["kind"] as! String
+        self.currency = dictionary["currency"] as! String
+        
+        if let price = dictionary["trackPrice"] as? Double{
+            self.price = price
+        } else {
+            self.price = 0.0
+        }
+        
+        if let genre = dictionary["primaryGenreName"] as? String {
+            self.genre = genre
+        } else {
+            self.genre = ""
+        }
+    }
+    func getName() -> String{
+        return name
+    }
+    func getArtistName() -> String {
+        return artistName
+    }
+    func isNoFound() -> Bool {
+        return false
+    }
+}
+
+class AudioBookResult: Result {
+    private var name: String
+    private var artistName: String
+    private var artworkURL60: String
+    private var artworkURL100: String
+    private var storeURL: String
+    internal var kind: String
+    private var currency: String
+    private var price: Double
+    private var genre: String
+    
+    init(dictionary: [String: AnyObject]){
+        self.name = dictionary["collectionName"] as! String
+        self.artistName = dictionary["artistName"] as! String
+        self.artworkURL60 = dictionary["artworkUrl60"] as! String
+        self.artworkURL100 = dictionary["artworkUrl100"] as! String
+        self.storeURL = dictionary["collectionViewUrl"] as! String
+        self.kind = "audiobook"
+        self.currency = dictionary["currency"] as! String
+        
+        if let price = dictionary["collectionPrice"] as? Double{
+            self.price = price
+        } else {
+            self.price = 0.0
+        }
+        
+        if let genre = dictionary["primaryGenreName"] as? String {
+            self.genre = genre
+        } else {
+            self.genre = ""
+        }
+    }
+    func getName() -> String{
+        return name
+    }
+    func getArtistName() -> String {
+        return artistName
+    }
+    func isNoFound() -> Bool {
+        return false
+    }
+}
+
+class AppResult: Result {
+    private var name: String
+    private var artistName: String
+    private var artworkURL60: String
+    private var artworkURL100: String
+    private var storeURL: String
+    internal var kind: String
+    private var currency: String
+    private var price: Double
+    private var genre: String
+    
+    init(dictionary: [String: AnyObject]){
+        self.name = dictionary["trackName"] as! String
+        self.artistName = dictionary["artistName"] as! String
+        self.artworkURL60 = dictionary["artworkUrl60"] as! String
+        self.artworkURL100 = dictionary["artworkUrl100"] as! String
+        self.storeURL = dictionary["trackViewUrl"] as! String
+        self.kind = dictionary["kind"] as! String
+        self.currency = dictionary["currency"] as! String
+        
+        if let price = dictionary["price"] as? Double{
+            self.price = price
+        } else {
+            self.price = 0.0
+        }
+        
+        if let genre = dictionary["primaryGenreName"] as? String {
+            self.genre = genre
+        } else {
+            self.genre = ""
+        }
+    }
+    func getName() -> String{
+        return name
+    }
+    func getArtistName() -> String {
+        return artistName
+    }
+    func isNoFound() -> Bool {
+        return false
+    }
+}
+
+class EBookResult: Result {
+    private var name: String
+    private var artistName: String
+    private var artworkURL60: String
+    private var artworkURL100: String
+    private var storeURL: String
+    internal var kind: String
+    private var currency: String
+    private var price: Double
+    private var genre: String
+    
+    init(dictionary: [String: AnyObject]){
+        self.name = dictionary["trackName"] as! String
+        self.artistName = dictionary["artistName"] as! String
+        self.artworkURL60 = dictionary["artworkUrl60"] as! String
+        self.artworkURL100 = dictionary["artworkUrl100"] as! String
+        self.storeURL = dictionary["trackViewUrl"] as! String
+        self.kind = dictionary["kind"] as! String
+        self.currency = dictionary["currency"] as! String
+        
+        if let price = dictionary["price"] as? Double{
+            self.price = price
+        } else {
+            self.price = 0.0
+        }
+        
+        if let genre = dictionary["geners"] as? String {
+            self.genre = genre
+        } else {
+            self.genre = ""
+        }
     }
     func getName() -> String{
         return name
@@ -93,8 +268,7 @@ class SearchViewController: UIViewController {
     }
     
     func parseJSON(jsonString: String) -> [String: AnyObject]? {
-        guard let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)
-            else {
+        guard let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding) else {
                 return nil
         }
         do {
@@ -120,6 +294,34 @@ class SearchViewController: UIViewController {
         }
         
     }
+    
+    func parseDictinory(dictionary: [String: AnyObject]) -> [Result] {
+        guard let array = dictionary["results"] as? [AnyObject] else {
+            print("Exepted 'result' array")
+            return []
+        }
+        var searchResult = [Result]()
+        for resultDict in array {
+            if let resultDict = resultDict as? [String: AnyObject] {
+                if let wrapperType = resultDict["wrapperType"] as? String, let _ = resultDict["kind"] as? String {
+                    switch wrapperType {
+                    case "track":
+                        searchResult.append(TrackResult(dictionary: resultDict))
+                    case "audiobook":
+                        searchResult.append(AudioBookResult(dictionary: resultDict))
+                    case "software":
+                        searchResult.append(AppResult(dictionary: resultDict))
+                    default :
+                        break
+                    }
+                }
+                else if let kind = resultDict["king"] as? String where kind == "ebook" {
+                    searchResult.append(EBookResult(dictionary: resultDict))
+                }
+            }
+        }
+        return searchResult
+    }
 }
 
 extension SearchViewController: UISearchBarDelegate {
@@ -130,12 +332,12 @@ extension SearchViewController: UISearchBarDelegate {
             let url = urlWithSearchText(searchBar.text!)
             if let queryResultInJsonString = performStoreRequestWithURL(url) {
                 if let dictionary = parseJSON(queryResultInJsonString) {
-                    print("Dictionary: \(dictionary)")
+                    searchResults.appendContentsOf(parseDictinory(dictionary))
+                    searchResults.sortInPlace {$0.getName().localizedStandardCompare($1.getName()) == .OrderedAscending}
                     tableView.reloadData()
                 }
                 return
             }
-            
             showNetworkError()
         }
     }
@@ -157,7 +359,11 @@ extension SearchViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.searchResultCell, forIndexPath: indexPath) as! SearchResultCell
         
         cell.nameLabel.text = searchResults[indexPath.row].getName()
-        cell.artistNameLabel.text = searchResults[indexPath.row].getArtistName()
+        if searchResults[indexPath.row].getArtistName().isEmpty {
+            cell.artistNameLabel.text = "Unknown"
+        } else {
+            cell.artistNameLabel.text = String(format: "%@ (%@)", searchResults[indexPath.row].getArtistName(), searchResults[indexPath.row].getKindForDisplay())
+        }
         return cell
     }
     
