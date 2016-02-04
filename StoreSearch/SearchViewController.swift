@@ -241,6 +241,7 @@ class TableViewCellIdentifiers {
 class SearchViewController: UIViewController {
     
     var searchResults = [Result]()
+    var dataTask: NSURLSessionDataTask?
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
@@ -347,6 +348,8 @@ extension SearchViewController: UISearchBarDelegate {
             searchBar.resignFirstResponder()
             searchResults.removeAll()
             
+            dataTask?.cancel()
+            
             searchResults.append(LoadingResult())
             tableView.reloadData()
 
@@ -354,16 +357,10 @@ extension SearchViewController: UISearchBarDelegate {
             
             let session = NSURLSession.sharedSession()
             
-            let dataTask = session.dataTaskWithURL(url, completionHandler: {
+            dataTask = session.dataTaskWithURL(url, completionHandler: {
                 data, response, error in
-                if let error = error {
-                    print("Failure \(error)")
-                    self.searchResults.removeAll()
-                    self.searchResults.append(NoFoundResult())
-                    dispatch_async(dispatch_get_main_queue()){
-                        self.tableView.reloadData()
-                        self.showNetworkError()
-                    }
+                if let error = error where error.code == -999 {
+                    return
                 } else if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 {
                     if let data = data, dictionary = self.parseJSON(data) {
                         self.searchResults.removeAll()
@@ -382,7 +379,7 @@ extension SearchViewController: UISearchBarDelegate {
                     }
                 }
             })
-            dataTask.resume()
+            dataTask?.resume()
            
         }
     }
