@@ -284,14 +284,11 @@ class SearchViewController: UIViewController {
         return url!
     }
     
-    func parseJSON(jsonString: String) -> [String: AnyObject]? {
-        guard let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding) else {
-                return nil
-        }
+    func parseJSON(data: NSData) -> [String: AnyObject]? {
         do {
             return try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject]
         } catch {
-            print("JSON Error: \(error)")
+            print("JSON error: \(error)")
             return nil
         }
     }
@@ -352,25 +349,41 @@ extension SearchViewController: UISearchBarDelegate {
             
             searchResults.append(LoadingResult())
             tableView.reloadData()
+
+            let url = urlWithSearchText(searchBar.text!)
             
-            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-            dispatch_async(queue) {
-                let url = self.urlWithSearchText(searchBar.text!)
-                if let queryResultInJsonString = self.performStoreRequestWithURL(url) {
-                    if let dictionary = self.parseJSON(queryResultInJsonString) {
+            let session = NSURLSession.sharedSession()
+            
+            let dataTask = session.dataTaskWithURL(url, completionHandler: {
+                data, response, error in
+                if let error = error {
+                    print("Failure \(error)")
+                    self.searchResults.removeAll()
+                    self.searchResults.append(NoFoundResult())
+                    dispatch_async(dispatch_get_main_queue()){
+                        self.tableView.reloadData()
+                        self.showNetworkError()
+                    }
+                } else if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 {
+                    if let data = data, dictionary = self.parseJSON(data) {
                         self.searchResults.removeAll()
                         self.searchResults.appendContentsOf(self.parseDictinory(dictionary))
-                        self.searchResults.sortInPlace {$0 < $1}
-                        dispatch_async(dispatch_get_main_queue()){
+                        self.searchResults.sortInPlace(<)
+                        dispatch_async(dispatch_get_main_queue()) {
                             self.tableView.reloadData()
                         }
                     }
-                    return
+                } else {
+                    self.searchResults.removeAll()
+                    self.searchResults.append(NoFoundResult())
+                    dispatch_async(dispatch_get_main_queue()){
+                        self.tableView.reloadData()
+                        self.showNetworkError()
+                    }
                 }
-                dispatch_async(dispatch_get_main_queue()){
-                    self.showNetworkError()
-                }
-            }
+            })
+            dataTask.resume()
+           
         }
     }
     
