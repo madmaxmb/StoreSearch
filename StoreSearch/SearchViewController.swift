@@ -14,9 +14,13 @@ protocol Result {
     func getArtistName() -> String
     func isNoFound() -> Bool
     func getKindForDisplay() -> String
+    func isLoad() -> Bool
 }
 
 extension Result {
+    func getName() -> String {
+        return ""
+    }
     func getArtistName() -> String {
         return ""
     }
@@ -34,6 +38,12 @@ extension Result {
             case "tv-episode": return "TV Episode"
         default: return self.kind
         }
+    }
+    func isLoad() -> Bool {
+        return false
+    }
+    func isNoFound() -> Bool {
+        return false
     }
 }
 
@@ -85,9 +95,6 @@ class TrackResult: Result {
     func getArtistName() -> String {
         return artistName
     }
-    func isNoFound() -> Bool {
-        return false
-    }
 }
 
 class AudioBookResult: Result {
@@ -127,9 +134,6 @@ class AudioBookResult: Result {
     }
     func getArtistName() -> String {
         return artistName
-    }
-    func isNoFound() -> Bool {
-        return false
     }
 }
 
@@ -171,9 +175,6 @@ class AppResult: Result {
     func getArtistName() -> String {
         return artistName
     }
-    func isNoFound() -> Bool {
-        return false
-    }
 }
 
 class EBookResult: Result {
@@ -214,14 +215,27 @@ class EBookResult: Result {
     func getArtistName() -> String {
         return artistName
     }
-    func isNoFound() -> Bool {
-        return false
+}
+
+class LoadingResult: Result {
+    var name: String
+    var kind: String
+    init() {
+        self.name = "Loading"
+        self.kind = "Loading"
+    }
+    func getArtistName() -> String {
+        return name
+    }
+    func isLoad() -> Bool {
+        return true
     }
 }
 
 class TableViewCellIdentifiers {
     static let searchResultCell = "SearchResultCell"
     static let nothingFoundCell = "NothingFoundCell"
+    static let loadingCell = "LoadingCell"
 }
 
 class SearchViewController: UIViewController {
@@ -239,6 +253,9 @@ class SearchViewController: UIViewController {
         
         cellNib = UINib(nibName: TableViewCellIdentifiers.nothingFoundCell, bundle: nil)
         tableView.registerNib(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.nothingFoundCell)
+        
+        cellNib = UINib(nibName: TableViewCellIdentifiers.loadingCell, bundle: nil)
+        tableView.registerNib(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.loadingCell)
         
         tableView.contentInset = UIEdgeInsets(top: 64, left: 0, bottom: 0, right: 0)
         tableView.rowHeight = 80
@@ -320,6 +337,9 @@ class SearchViewController: UIViewController {
                 }
             }
         }
+        if searchResult.isEmpty {
+            searchResult.append(NoFoundResult())
+        }
         return searchResult
     }
 }
@@ -329,16 +349,28 @@ extension SearchViewController: UISearchBarDelegate {
         if !searchBar.text!.isEmpty {
             searchBar.resignFirstResponder()
             searchResults.removeAll()
-            let url = urlWithSearchText(searchBar.text!)
-            if let queryResultInJsonString = performStoreRequestWithURL(url) {
-                if let dictionary = parseJSON(queryResultInJsonString) {
-                    searchResults.appendContentsOf(parseDictinory(dictionary))
-                    searchResults.sortInPlace {$0.getName().localizedStandardCompare($1.getName()) == .OrderedAscending}
-                    tableView.reloadData()
+            
+            searchResults.append(LoadingResult())
+            tableView.reloadData()
+            
+            let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+            dispatch_async(queue) {
+                let url = self.urlWithSearchText(searchBar.text!)
+                if let queryResultInJsonString = self.performStoreRequestWithURL(url) {
+                    if let dictionary = self.parseJSON(queryResultInJsonString) {
+                        self.searchResults.removeAll()
+                        self.searchResults.appendContentsOf(self.parseDictinory(dictionary))
+                        self.searchResults.sortInPlace {$0 < $1}
+                        dispatch_async(dispatch_get_main_queue()){
+                            self.tableView.reloadData()
+                        }
+                    }
+                    return
                 }
-                return
+                dispatch_async(dispatch_get_main_queue()){
+                    self.showNetworkError()
+                }
             }
-            showNetworkError()
         }
     }
     
@@ -353,9 +385,18 @@ extension SearchViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         if searchResults[indexPath.item].isNoFound(){
             return tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.nothingFoundCell, forIndexPath: indexPath)
         }
+        
+        if searchResults[indexPath.item].isLoad(){
+            let cell =  tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.loadingCell, forIndexPath: indexPath)
+            let spinner = cell.viewWithTag(100) as! UIActivityIndicatorView
+            spinner.startAnimating()
+            return cell
+        }
+        
         let cell = tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.searchResultCell, forIndexPath: indexPath) as! SearchResultCell
         
         cell.nameLabel.text = searchResults[indexPath.row].getName()
@@ -375,7 +416,7 @@ extension SearchViewController: UITableViewDataSource {
         if searchResults.isEmpty {
             return nil
         } else {
-            if searchResults[indexPath.item].isNoFound() {
+            if searchResults[indexPath.item].isNoFound() || searchResults[indexPath.item].isLoad() {
                 return nil
             }
             return indexPath
@@ -383,4 +424,8 @@ extension SearchViewController: UITableViewDataSource {
     }
 }
 extension SearchViewController: UITableViewDelegate {
+}
+
+func < (left: Result, right: Result) -> Bool {
+    return left.getName().localizedStandardCompare(right.getName()) == .OrderedAscending
 }

@@ -15,6 +15,7 @@
 		B5F91AAC1C5E5C17008E11AD /* SearchResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F91AAB1C5E5C17008E11AD /* SearchResultCell.xib */; settings = {ASSET_TAGS = (); }; };
 		B5F91AB01C5E6E14008E11AD /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91AAF1C5E6E14008E11AD /* SearchResultCell.swift */; settings = {ASSET_TAGS = (); }; };
 		B5F91AB21C5E7966008E11AD /* NothingFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F91AB11C5E7966008E11AD /* NothingFoundCell.xib */; settings = {ASSET_TAGS = (); }; };
+		B5FAAF2A1C625AC7008E7B37 /* LoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FAAF291C625AC7008E7B37 /* LoadingCell.xib */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		B5F91AAB1C5E5C17008E11AD /* SearchResultCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchResultCell.xib; sourceTree = "<group>"; };
 		B5F91AAF1C5E6E14008E11AD /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		B5F91AB11C5E7966008E11AD /* NothingFoundCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NothingFoundCell.xib; sourceTree = "<group>"; };
+		B5FAAF291C625AC7008E7B37 /* LoadingCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoadingCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,7 @@
 		B5F91A981C5D667C008E11AD /* StoreSearch */ = {
 			isa = PBXGroup;
 			children = (
+				B5FAAF291C625AC7008E7B37 /* LoadingCell.xib */,
 				B5F91A991C5D667C008E11AD /* AppDelegate.swift */,
 				B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */,
 				B5F91AB11C5E7966008E11AD /* NothingFoundCell.xib */,
@@ -133,6 +136,7 @@
 			files = (
 				B5F91AA41C5D667C008E11AD /* LaunchScreen.storyboard in Resources */,
 				B5F91AA11C5D667C008E11AD /* Assets.xcassets in Resources */,
+				B5FAAF2A1C625AC7008E7B37 /* LoadingCell.xib in Resources */,
 				B5F91AAC1C5E5C17008E11AD /* SearchResultCell.xib in Resources */,
 				B5F91AB21C5E7966008E11AD /* NothingFoundCell.xib in Resources */,
 				B5F91A9F1C5D667C008E11AD /* Main.storyboard in Resources */,
