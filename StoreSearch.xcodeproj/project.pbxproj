@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B50912BD1C650BCA00F82B77 /* UIImageView+DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50912BC1C650BCA00F82B77 /* UIImageView+DownloadImage.swift */; settings = {ASSET_TAGS = (); }; };
 		B5F91A9A1C5D667C008E11AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91A991C5D667C008E11AD /* AppDelegate.swift */; };
 		B5F91A9C1C5D667C008E11AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */; };
 		B5F91A9F1C5D667C008E11AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5F91A9D1C5D667C008E11AD /* Main.storyboard */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B50912BC1C650BCA00F82B77 /* UIImageView+DownloadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+DownloadImage.swift"; sourceTree = "<group>"; };
 		B5F91A961C5D667C008E11AD /* StoreSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoreSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F91A991C5D667C008E11AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 				B5F91AA01C5D667C008E11AD /* Assets.xcassets */,
 				B5F91AAB1C5E5C17008E11AD /* SearchResultCell.xib */,
 				B5F91AAF1C5E6E14008E11AD /* SearchResultCell.swift */,
+				B50912BC1C650BCA00F82B77 /* UIImageView+DownloadImage.swift */,
 				B5F91AA51C5D667C008E11AD /* Info.plist */,
 			);
 			path = StoreSearch;
@@ -146,6 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B50912BD1C650BCA00F82B77 /* UIImageView+DownloadImage.swift in Sources */,
 				B5F91A9C1C5D667C008E11AD /* SearchViewController.swift in Sources */,
 				B5F91AB01C5E6E14008E11AD /* SearchResultCell.swift in Sources */,
 				B5F91A9A1C5D667C008E11AD /* AppDelegate.swift in Sources */,

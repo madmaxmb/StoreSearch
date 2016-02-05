@@ -9,9 +9,11 @@
 import UIKit
 
 protocol Result {
+    var artworkURL60: String {get}
     var kind:String {get}
     func getName() -> String
     func getArtistName() -> String
+    func getArtworkImageURL60() -> String
     func isNoFound() -> Bool
     func getKindForDisplay() -> String
     func isLoad() -> Bool
@@ -23,6 +25,9 @@ extension Result {
     }
     func getArtistName() -> String {
         return ""
+    }
+    func getArtworkImageURL60() -> String {
+        return self.artworkURL60
     }
     func getKindForDisplay() -> String {
         switch self.kind {
@@ -49,6 +54,7 @@ extension Result {
 
 class NoFoundResult: Result {
     internal var kind = ""
+    internal var artworkURL60 = ""
     func getName() -> String {
         return "(Nothing found)"
     }
@@ -60,7 +66,7 @@ class NoFoundResult: Result {
 class TrackResult: Result {
     private var name: String
     private var artistName: String
-    private var artworkURL60: String
+    internal var artworkURL60: String
     private var artworkURL100: String
     private var storeURL: String
     internal var kind: String
@@ -100,7 +106,7 @@ class TrackResult: Result {
 class AudioBookResult: Result {
     private var name: String
     private var artistName: String
-    private var artworkURL60: String
+    internal var artworkURL60: String
     private var artworkURL100: String
     private var storeURL: String
     internal var kind: String
@@ -140,7 +146,7 @@ class AudioBookResult: Result {
 class AppResult: Result {
     private var name: String
     private var artistName: String
-    private var artworkURL60: String
+    internal var artworkURL60: String
     private var artworkURL100: String
     private var storeURL: String
     internal var kind: String
@@ -180,7 +186,7 @@ class AppResult: Result {
 class EBookResult: Result {
     private var name: String
     private var artistName: String
-    private var artworkURL60: String
+    internal var artworkURL60: String
     private var artworkURL100: String
     private var storeURL: String
     internal var kind: String
@@ -220,6 +226,7 @@ class EBookResult: Result {
 class LoadingResult: Result {
     var name: String
     var kind: String
+    var artworkURL60 = ""
     init() {
         self.name = "Loading"
         self.kind = "Loading"
@@ -413,11 +420,11 @@ extension SearchViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        if searchResults[indexPath.item].isNoFound(){
+        if searchResults[indexPath.row].isNoFound(){
             return tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.nothingFoundCell, forIndexPath: indexPath)
         }
         
-        if searchResults[indexPath.item].isLoad(){
+        if searchResults[indexPath.row].isLoad(){
             let cell =  tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.loadingCell, forIndexPath: indexPath)
             let spinner = cell.viewWithTag(100) as! UIActivityIndicatorView
             spinner.startAnimating()
@@ -426,12 +433,7 @@ extension SearchViewController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.searchResultCell, forIndexPath: indexPath) as! SearchResultCell
         
-        cell.nameLabel.text = searchResults[indexPath.row].getName()
-        if searchResults[indexPath.row].getArtistName().isEmpty {
-            cell.artistNameLabel.text = "Unknown"
-        } else {
-            cell.artistNameLabel.text = String(format: "%@ (%@)", searchResults[indexPath.row].getArtistName(), searchResults[indexPath.row].getKindForDisplay())
-        }
+        cell.configureForSearchResult(searchResults[indexPath.row])
         return cell
     }
     

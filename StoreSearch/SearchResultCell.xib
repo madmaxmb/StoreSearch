@@ -54,7 +54,7 @@
             <animations/>
             <connections>
                 <outlet property="artistNameLabel" destination="iJO-ar-f0V" id="Zu9-b3-lcX"/>
-                <outlet property="artoworkImageView" destination="tv9-DC-Dc6" id="Vg3-Nm-NVm"/>
+                <outlet property="artworkImageView" destination="tv9-DC-Dc6" id="73N-ls-c03"/>
                 <outlet property="nameLabel" destination="GrO-gp-gev" id="ec3-Si-mWv"/>
             </connections>
             <point key="canvasLocation" x="257" y="334"/>
