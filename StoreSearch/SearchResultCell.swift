@@ -39,7 +39,7 @@ class SearchResultCell: UITableViewCell {
             artistNameLabel.text = String(format: "%@ (%@)", searchResult.getArtistName(), searchResult.getKindForDisplay())
         }
         artworkImageView.image = UIImage(named: "Placeholder")
-        if let url = NSURL(string: searchResult.getArtworkImageURL60()) {
+        if let url = searchResult.getArtworkImageURL60() {
             downloadTask = artworkImageView.loadImageWithUrl(url)
         }
     }

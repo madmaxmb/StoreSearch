@@ -10,12 +10,23 @@ import UIKit
 
 protocol Result {
     var artworkURL60: String {get}
+    var artworkURL100: String {get}
     var kind:String {get}
+    var genre: String {get}
+    var price: Double {get}
+    var currency: String {get}
+    var storeURL: String {get}
+    
     func getName() -> String
     func getArtistName() -> String
-    func getArtworkImageURL60() -> String
+    func getArtworkImageURL60() -> NSURL?
+    func getArtworkImageURL100() -> NSURL?
     func isNoFound() -> Bool
     func getKindForDisplay() -> String
+    func getGenre() -> String
+    func getCurrency() -> String
+    func getPrice() -> Double
+    func getStore() -> NSURL?
     func isLoad() -> Bool
 }
 
@@ -26,9 +37,7 @@ extension Result {
     func getArtistName() -> String {
         return ""
     }
-    func getArtworkImageURL60() -> String {
-        return self.artworkURL60
-    }
+
     func getKindForDisplay() -> String {
         switch self.kind {
             case "album": return "Album"
@@ -44,6 +53,25 @@ extension Result {
         default: return self.kind
         }
     }
+    func getStore() -> NSURL? {
+        return NSURL(string: self.storeURL)
+    }
+    func getArtworkImageURL60() -> NSURL? {
+        return NSURL(string: self.artworkURL60)
+    }
+    func getArtworkImageURL100() -> NSURL? {
+        return NSURL(string: self.artworkURL100)
+    }
+    func getGenre() -> String {
+        return genre
+    }
+    func getPrice() -> Double{
+        return price
+    }
+    func getCurrency() -> String {
+        return currency
+    }
+    
     func isLoad() -> Bool {
         return false
     }
@@ -55,11 +83,27 @@ extension Result {
 class NoFoundResult: Result {
     internal var kind = ""
     internal var artworkURL60 = ""
+    internal var artworkURL100 = ""
+    internal var genre = ""
+    internal var price = 0.0
+    var storeURL = ""
+    
+    var currency = ""
+    
     func getName() -> String {
         return "(Nothing found)"
     }
     func isNoFound() -> Bool {
         return true
+    }
+    func getStore() -> NSURL? {
+        return nil
+    }
+    func getArtworkImageURL60() -> NSURL? {
+        return nil
+    }
+    func getArtworkImageURL100() -> NSURL? {
+        return nil
     }
 }
 
@@ -67,12 +111,12 @@ class TrackResult: Result {
     private var name: String
     private var artistName: String
     internal var artworkURL60: String
-    private var artworkURL100: String
-    private var storeURL: String
+    internal var artworkURL100: String
+    internal var storeURL: String
     internal var kind: String
-    private var currency: String
-    private var price: Double
-    private var genre: String
+    internal var currency: String
+    internal var price: Double
+    internal var genre: String
     
     init(dictionary: [String: AnyObject]){
         self.name = dictionary["trackName"] as! String
@@ -107,12 +151,12 @@ class AudioBookResult: Result {
     private var name: String
     private var artistName: String
     internal var artworkURL60: String
-    private var artworkURL100: String
-    private var storeURL: String
+    internal var artworkURL100: String
+    internal var storeURL: String
     internal var kind: String
-    private var currency: String
-    private var price: Double
-    private var genre: String
+    internal var currency: String
+    internal var price: Double
+    internal var genre: String
     
     init(dictionary: [String: AnyObject]){
         self.name = dictionary["collectionName"] as! String
@@ -147,12 +191,12 @@ class AppResult: Result {
     private var name: String
     private var artistName: String
     internal var artworkURL60: String
-    private var artworkURL100: String
-    private var storeURL: String
+    internal var artworkURL100: String
+    internal var storeURL: String
     internal var kind: String
-    private var currency: String
-    private var price: Double
-    private var genre: String
+    internal var currency: String
+    internal var price: Double
+    internal var genre: String
     
     init(dictionary: [String: AnyObject]){
         self.name = dictionary["trackName"] as! String
@@ -187,12 +231,12 @@ class EBookResult: Result {
     private var name: String
     private var artistName: String
     internal var artworkURL60: String
-    private var artworkURL100: String
-    private var storeURL: String
+    internal var artworkURL100: String
+    internal var storeURL: String
     internal var kind: String
-    private var currency: String
-    private var price: Double
-    private var genre: String
+    internal var currency: String
+    internal var price: Double
+    internal var genre: String
     
     init(dictionary: [String: AnyObject]){
         self.name = dictionary["trackName"] as! String
@@ -225,17 +269,30 @@ class EBookResult: Result {
 
 class LoadingResult: Result {
     var name: String
-    var kind: String
+    var kind = ""
     var artworkURL60 = ""
+    var artworkURL100 = ""
+    var genre = ""
+    var price = 0.0
+    var currency = ""
+    var storeURL = ""
     init() {
         self.name = "Loading"
-        self.kind = "Loading"
     }
     func getArtistName() -> String {
         return name
     }
     func isLoad() -> Bool {
         return true
+    }
+    func getStore() -> NSURL? {
+        return nil
+    }
+    func getArtworkImageURL60() -> NSURL? {
+        return nil
+    }
+    func getArtworkImageURL100() -> NSURL? {
+        return nil
     }
 }
 
@@ -411,6 +468,14 @@ extension SearchViewController: UISearchBarDelegate {
     func positionForBar(bar: UIBarPositioning) -> UIBarPosition {
         return .TopAttached
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "ShowDetail" {
+            let detailViewController = segue.destinationViewController as! DetailViewController
+            let indexPath = sender as! NSIndexPath
+            detailViewController.searchResult = searchResults[indexPath.row]
+        }
+    }
 }
 
 extension SearchViewController: UITableViewDataSource {
@@ -439,6 +504,7 @@ extension SearchViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        performSegueWithIdentifier("ShowDetail", sender: indexPath)
     }
     
     func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
