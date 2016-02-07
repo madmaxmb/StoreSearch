@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -11,7 +12,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DYr-6e-CKf" id="d60-2B-ugS">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="79.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="tv9-DC-Dc6">
@@ -23,18 +24,18 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GrO-gp-gev">
-                        <rect key="frame" x="90" y="15" width="222" height="22"/>
+                        <rect key="frame" x="90" y="15" width="44.5" height="19.5"/>
                         <animations/>
-                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label userInteractionEnabled="NO" alpha="0.5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iJO-ar-f0V">
-                        <rect key="frame" x="90" y="44" width="222" height="18"/>
+                        <rect key="frame" x="90" y="44.5" width="77" height="17"/>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -42,14 +43,22 @@
                 <animations/>
                 <constraints>
                     <constraint firstItem="GrO-gp-gev" firstAttribute="top" secondItem="d60-2B-ugS" secondAttribute="top" constant="15" id="0VQ-F6-Se7"/>
-                    <constraint firstAttribute="bottom" secondItem="iJO-ar-f0V" secondAttribute="bottom" constant="18" id="4Ry-0R-thU"/>
-                    <constraint firstAttribute="trailing" secondItem="iJO-ar-f0V" secondAttribute="trailing" constant="8" id="AtF-fM-SEp"/>
                     <constraint firstItem="GrO-gp-gev" firstAttribute="leading" secondItem="tv9-DC-Dc6" secondAttribute="trailing" constant="15" id="Fez-nH-4FE"/>
                     <constraint firstItem="iJO-ar-f0V" firstAttribute="leading" secondItem="tv9-DC-Dc6" secondAttribute="trailing" constant="15" id="IlW-gm-1Bk"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="iJO-ar-f0V" secondAttribute="trailing" constant="8" id="L0r-CP-Ppa"/>
+                    <constraint firstItem="GrO-gp-gev" firstAttribute="top" secondItem="d60-2B-ugS" secondAttribute="topMargin" constant="7" id="PJV-Cy-ha4"/>
                     <constraint firstItem="tv9-DC-Dc6" firstAttribute="top" secondItem="d60-2B-ugS" secondAttribute="top" constant="10" id="SpW-Hb-x2z"/>
                     <constraint firstAttribute="trailing" secondItem="GrO-gp-gev" secondAttribute="trailing" constant="8" id="TlH-Cb-s3F"/>
                     <constraint firstItem="tv9-DC-Dc6" firstAttribute="leading" secondItem="d60-2B-ugS" secondAttribute="leading" constant="15" id="guO-Ps-Ka0"/>
+                    <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="GrO-gp-gev" secondAttribute="trailing" constant="8" id="iHc-pm-I3b"/>
+                    <constraint firstItem="iJO-ar-f0V" firstAttribute="top" secondItem="GrO-gp-gev" secondAttribute="bottom" constant="10" id="wJg-7L-fFd"/>
                 </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="0VQ-F6-Se7"/>
+                        <exclude reference="TlH-Cb-s3F"/>
+                    </mask>
+                </variation>
             </tableViewCellContentView>
             <animations/>
             <connections>

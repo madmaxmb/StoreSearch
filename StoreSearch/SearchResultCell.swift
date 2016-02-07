@@ -32,7 +32,10 @@ class SearchResultCell: UITableViewCell {
     }
     
     func configureForSearchResult(searchResult: Result) {
+        nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         nameLabel.text = searchResult.getName()
+        
+        artistNameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
         if searchResult.getArtistName().isEmpty {
             artistNameLabel.text = "Unknown"
         } else {

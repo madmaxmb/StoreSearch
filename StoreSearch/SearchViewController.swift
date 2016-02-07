@@ -312,7 +312,7 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        
 //         Do any additional setup after loading the view, typically from a nib.
         var cellNib = UINib(nibName: TableViewCellIdentifiers.searchResultCell, bundle: nil)
         tableView.registerNib(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.searchResultCell)
@@ -417,6 +417,7 @@ class SearchViewController: UIViewController {
         }
         return searchResult
     }
+    
 }
 
 extension SearchViewController: UISearchBarDelegate {
