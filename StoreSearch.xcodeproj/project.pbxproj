@@ -10,6 +10,8 @@
 		B50912BD1C650BCA00F82B77 /* UIImageView+DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50912BC1C650BCA00F82B77 /* UIImageView+DownloadImage.swift */; settings = {ASSET_TAGS = (); }; };
 		B50A4A411C6548D600805006 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A4A401C6548D600805006 /* DetailViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		B50A4A431C6558D800805006 /* DimmingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A4A421C6558D800805006 /* DimmingPresentationController.swift */; settings = {ASSET_TAGS = (); }; };
+		B575D5E01C67FFB6001C00AF /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B575D5DF1C67FFB6001C00AF /* GradientView.swift */; settings = {ASSET_TAGS = (); }; };
+		B575D5E21C68F282001C00AF /* BounceAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B575D5E11C68F282001C00AF /* BounceAnimationController.swift */; settings = {ASSET_TAGS = (); }; };
 		B5F91A9A1C5D667C008E11AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91A991C5D667C008E11AD /* AppDelegate.swift */; };
 		B5F91A9C1C5D667C008E11AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */; };
 		B5F91A9F1C5D667C008E11AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5F91A9D1C5D667C008E11AD /* Main.storyboard */; };
@@ -24,6 +26,8 @@
 		B50912BC1C650BCA00F82B77 /* UIImageView+DownloadImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+DownloadImage.swift"; sourceTree = "<group>"; };
 		B50A4A401C6548D600805006 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		B50A4A421C6558D800805006 /* DimmingPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DimmingPresentationController.swift; sourceTree = "<group>"; };
+		B575D5DF1C67FFB6001C00AF /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		B575D5E11C68F282001C00AF /* BounceAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BounceAnimationController.swift; sourceTree = "<group>"; };
 		B5F91A961C5D667C008E11AD /* StoreSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoreSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F91A991C5D667C008E11AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -71,6 +75,8 @@
 				B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */,
 				B50A4A421C6558D800805006 /* DimmingPresentationController.swift */,
 				B50A4A401C6548D600805006 /* DetailViewController.swift */,
+				B575D5E11C68F282001C00AF /* BounceAnimationController.swift */,
+				B575D5DF1C67FFB6001C00AF /* GradientView.swift */,
 				B5F91AB11C5E7966008E11AD /* NothingFoundCell.xib */,
 				B5F91A9D1C5D667C008E11AD /* Main.storyboard */,
 				B5F91AA01C5D667C008E11AD /* Assets.xcassets */,
@@ -157,8 +163,10 @@
 			files = (
 				B50912BD1C650BCA00F82B77 /* UIImageView+DownloadImage.swift in Sources */,
 				B5F91A9C1C5D667C008E11AD /* SearchViewController.swift in Sources */,
+				B575D5E21C68F282001C00AF /* BounceAnimationController.swift in Sources */,
 				B50A4A411C6548D600805006 /* DetailViewController.swift in Sources */,
 				B5F91AB01C5E6E14008E11AD /* SearchResultCell.swift in Sources */,
+				B575D5E01C67FFB6001C00AF /* GradientView.swift in Sources */,
 				B5F91A9A1C5D667C008E11AD /* AppDelegate.swift in Sources */,
 				B50A4A431C6558D800805006 /* DimmingPresentationController.swift in Sources */,
 			);

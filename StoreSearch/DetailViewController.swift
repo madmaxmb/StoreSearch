@@ -34,6 +34,8 @@ class DetailViewController: UIViewController {
 
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("close"))
         
+        view.backgroundColor = UIColor.clearColor()
+        
         view.tintColor = UIColor(red: 20/255, green: 160/255, blue: 160/255, alpha: 1)
         popupView.layer.cornerRadius = 10
         gestureRecognizer.cancelsTouchesInView = false
@@ -68,6 +70,9 @@ class DetailViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return BounceAnimationController()
+    }
     
     func updateUI() {
         nameLable.text = searchResult.getName()
