@@ -7,19 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B50912BD1C650BCA00F82B77 /* UIImageView+DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50912BC1C650BCA00F82B77 /* UIImageView+DownloadImage.swift */; settings = {ASSET_TAGS = (); }; };
-		B50A4A411C6548D600805006 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A4A401C6548D600805006 /* DetailViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		B50A4A431C6558D800805006 /* DimmingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A4A421C6558D800805006 /* DimmingPresentationController.swift */; settings = {ASSET_TAGS = (); }; };
-		B575D5E01C67FFB6001C00AF /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B575D5DF1C67FFB6001C00AF /* GradientView.swift */; settings = {ASSET_TAGS = (); }; };
-		B575D5E21C68F282001C00AF /* BounceAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B575D5E11C68F282001C00AF /* BounceAnimationController.swift */; settings = {ASSET_TAGS = (); }; };
+		B50912BD1C650BCA00F82B77 /* UIImageView+DownloadImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50912BC1C650BCA00F82B77 /* UIImageView+DownloadImage.swift */; };
+		B50A4A411C6548D600805006 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A4A401C6548D600805006 /* DetailViewController.swift */; };
+		B50A4A431C6558D800805006 /* DimmingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50A4A421C6558D800805006 /* DimmingPresentationController.swift */; };
+		B575D5E01C67FFB6001C00AF /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B575D5DF1C67FFB6001C00AF /* GradientView.swift */; };
+		B575D5E21C68F282001C00AF /* BounceAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B575D5E11C68F282001C00AF /* BounceAnimationController.swift */; };
+		B575D5E41C693F4B001C00AF /* LandscapeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B575D5E31C693F4B001C00AF /* LandscapeViewController.swift */; };
+		B593E79B1C6A4D3100CE9966 /* FadeOutAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B593E79A1C6A4D3100CE9966 /* FadeOutAnimationController.swift */; };
+		B593E79D1C6A51C200CE9966 /* SlideOutAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B593E79C1C6A51C200CE9966 /* SlideOutAnimationController.swift */; };
 		B5F91A9A1C5D667C008E11AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91A991C5D667C008E11AD /* AppDelegate.swift */; };
 		B5F91A9C1C5D667C008E11AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */; };
 		B5F91A9F1C5D667C008E11AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5F91A9D1C5D667C008E11AD /* Main.storyboard */; };
 		B5F91AA11C5D667C008E11AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5F91AA01C5D667C008E11AD /* Assets.xcassets */; };
-		B5F91AAC1C5E5C17008E11AD /* SearchResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F91AAB1C5E5C17008E11AD /* SearchResultCell.xib */; settings = {ASSET_TAGS = (); }; };
-		B5F91AB01C5E6E14008E11AD /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91AAF1C5E6E14008E11AD /* SearchResultCell.swift */; settings = {ASSET_TAGS = (); }; };
-		B5F91AB21C5E7966008E11AD /* NothingFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F91AB11C5E7966008E11AD /* NothingFoundCell.xib */; settings = {ASSET_TAGS = (); }; };
-		B5FAAF2A1C625AC7008E7B37 /* LoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FAAF291C625AC7008E7B37 /* LoadingCell.xib */; settings = {ASSET_TAGS = (); }; };
+		B5F91AAC1C5E5C17008E11AD /* SearchResultCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F91AAB1C5E5C17008E11AD /* SearchResultCell.xib */; };
+		B5F91AB01C5E6E14008E11AD /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F91AAF1C5E6E14008E11AD /* SearchResultCell.swift */; };
+		B5F91AB21C5E7966008E11AD /* NothingFoundCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F91AB11C5E7966008E11AD /* NothingFoundCell.xib */; };
+		B5FAAF2A1C625AC7008E7B37 /* LoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FAAF291C625AC7008E7B37 /* LoadingCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +31,9 @@
 		B50A4A421C6558D800805006 /* DimmingPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DimmingPresentationController.swift; sourceTree = "<group>"; };
 		B575D5DF1C67FFB6001C00AF /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		B575D5E11C68F282001C00AF /* BounceAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BounceAnimationController.swift; sourceTree = "<group>"; };
+		B575D5E31C693F4B001C00AF /* LandscapeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandscapeViewController.swift; sourceTree = "<group>"; };
+		B593E79A1C6A4D3100CE9966 /* FadeOutAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FadeOutAnimationController.swift; sourceTree = "<group>"; };
+		B593E79C1C6A51C200CE9966 /* SlideOutAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SlideOutAnimationController.swift; sourceTree = "<group>"; };
 		B5F91A961C5D667C008E11AD /* StoreSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StoreSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F91A991C5D667C008E11AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
@@ -75,6 +81,9 @@
 				B5F91A9B1C5D667C008E11AD /* SearchViewController.swift */,
 				B50A4A421C6558D800805006 /* DimmingPresentationController.swift */,
 				B50A4A401C6548D600805006 /* DetailViewController.swift */,
+				B593E79C1C6A51C200CE9966 /* SlideOutAnimationController.swift */,
+				B593E79A1C6A4D3100CE9966 /* FadeOutAnimationController.swift */,
+				B575D5E31C693F4B001C00AF /* LandscapeViewController.swift */,
 				B575D5E11C68F282001C00AF /* BounceAnimationController.swift */,
 				B575D5DF1C67FFB6001C00AF /* GradientView.swift */,
 				B5F91AB11C5E7966008E11AD /* NothingFoundCell.xib */,
@@ -162,11 +171,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				B50912BD1C650BCA00F82B77 /* UIImageView+DownloadImage.swift in Sources */,
+				B575D5E41C693F4B001C00AF /* LandscapeViewController.swift in Sources */,
 				B5F91A9C1C5D667C008E11AD /* SearchViewController.swift in Sources */,
 				B575D5E21C68F282001C00AF /* BounceAnimationController.swift in Sources */,
 				B50A4A411C6548D600805006 /* DetailViewController.swift in Sources */,
 				B5F91AB01C5E6E14008E11AD /* SearchResultCell.swift in Sources */,
+				B593E79B1C6A4D3100CE9966 /* FadeOutAnimationController.swift in Sources */,
 				B575D5E01C67FFB6001C00AF /* GradientView.swift in Sources */,
+				B593E79D1C6A51C200CE9966 /* SlideOutAnimationController.swift in Sources */,
 				B5F91A9A1C5D667C008E11AD /* AppDelegate.swift in Sources */,
 				B50A4A431C6558D800805006 /* DimmingPresentationController.swift in Sources */,
 			);
@@ -274,7 +286,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = StoreSearch/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = EmbeddedCompany.StoreSearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -289,7 +301,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = StoreSearch/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = EmbeddedCompany.StoreSearch;
 				PRODUCT_NAME = "$(TARGET_NAME)";

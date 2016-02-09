@@ -310,6 +310,8 @@ class SearchViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentControl: UISegmentedControl!
     
+    var landscapeViewController: LandscapeViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -338,6 +340,55 @@ class SearchViewController: UIViewController {
         performSearch()
     }
     
+    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        
+        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+        
+        switch newCollection.verticalSizeClass {
+        case .Compact:
+            showLandscapeViewWithCoordinator(coordinator)
+        case .Regular, .Unspecified:
+            hideLandscapeViewWithCoordinator(coordinator)
+        }
+    }
+    
+    func showLandscapeViewWithCoordinator(coordinator: UIViewControllerTransitionCoordinator){
+        
+        precondition(landscapeViewController == nil)
+        
+        landscapeViewController = storyboard!.instantiateViewControllerWithIdentifier("LandscapeViewController") as? LandscapeViewController
+        
+        if let controller = landscapeViewController {
+            controller.view.frame = view.bounds
+            controller.view.alpha = 0.0
+            
+            view.addSubview(controller.view)
+            addChildViewController(controller)
+            
+            coordinator.animateAlongsideTransition({ _ in
+                controller.view.alpha = 1.0
+                self.searchBar.resignFirstResponder()
+                if self.presentedViewController != nil {
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }
+                }, completion: { _ in
+                controller.didMoveToParentViewController(self)
+            })
+        }
+    }
+    
+    func hideLandscapeViewWithCoordinator(coordinator: UIViewControllerTransitionCoordinator){
+        if let controller = landscapeViewController {
+            controller.willMoveToParentViewController(nil)
+            
+            coordinator.animateAlongsideTransition({ _ in controller.view.alpha = 0.0}, completion: { _ in
+                controller.view.removeFromSuperview()
+                controller.removeFromParentViewController()
+                self.landscapeViewController = nil
+            })
+        }
+    }
+
     func performStoreRequestWithURL(url: NSURL) -> String? {
         do {
             return try String(contentsOfURL: url, encoding: NSUTF8StringEncoding)
@@ -372,19 +423,11 @@ class SearchViewController: UIViewController {
     }
     
     func showNetworkError() {
-        if #available(iOS 8.0, *) {
-            let alert = UIAlertController(title: "Whoops...", message: "There was an error reading from the iTunes Store. Please try again.", preferredStyle: .Alert)
-            let action = UIAlertAction(title: "Ok", style: .Default, handler: nil)
-            alert.addAction(action)
-            
-            presentViewController(alert, animated: true, completion: nil)
-        } else {
-            // Fallback on earlier versions
-            let alert = UIAlertView(title: "Whoops...", message: "There was an error reading from the iTunes Stire. Please try again.", delegate: self, cancelButtonTitle: "Ok")
-            alert.alertViewStyle = .Default //UIAlertViewStyle.PlainTextInput
-            alert.show()
-        }
+        let alert = UIAlertController(title: "Whoops...", message: "There was an error reading from the iTunes Store. Please try again.", preferredStyle: .Alert)
+        let action = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+        alert.addAction(action)
         
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     func parseDictinory(dictionary: [String: AnyObject]) -> [Result] {
@@ -418,6 +461,10 @@ class SearchViewController: UIViewController {
         return searchResult
     }
     
+    
+    deinit {
+        print("deinit \(self)")
+    }
 }
 
 extension SearchViewController: UISearchBarDelegate {
