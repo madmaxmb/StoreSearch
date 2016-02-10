@@ -32,6 +32,7 @@ class SearchResultCell: UITableViewCell {
     }
     
     func configureForSearchResult(searchResult: Result) {
+        
         nameLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
         nameLabel.text = searchResult.getName()
         

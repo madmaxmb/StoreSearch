@@ -225,3 +225,9 @@ class EBookResult: Result {
         return artistName
     }
 }
+
+
+func < (left: Result, right: Result) -> Bool {
+    return left.getName().localizedStandardCompare(right.getName()) == .OrderedAscending
+}
+

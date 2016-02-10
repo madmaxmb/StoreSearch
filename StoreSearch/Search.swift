@@ -6,46 +6,68 @@
 //  Copyright © 2016 Maxim. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class Search {
-    var searchResults = [Result]()
     
-    private var loading = false
-    private var nothingFound = false
+    enum State {
+        case NotSearchYet
+        case Loading
+        case NoFound
+        case Results([Result])
+    }
+    
+    private(set) var state: State = .NotSearchYet
     
     private var dataTask: NSURLSessionDataTask? = nil
     
-    func performSearchForText(text: String, category: Int, completion: SearchComplete) { //?
+    enum Category: Int {
+        case All = 0
+        case Music = 1
+        case Software = 2
+        case EBook = 3
+        
+        var entityName: String {
+            switch self {
+            case .All: return ""
+            case .Music: return "musicTrack"
+            case .Software: return "software"
+            case .EBook: return "ebook"
+            }
+        }
+    }
+    
+    func performSearchForText(text: String, category: Category, completion: SearchComplete) { //?
         if !text.isEmpty {
             
             dataTask?.cancel()
-            self.loading = true
-            self.nothingFound = false
-            searchResults.removeAll()
+            state = .Loading
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
             let url = urlWithSearchText(text, category: category)
             
             let session = NSURLSession.sharedSession()
-            
+            var searchResults = [Result]()
             dataTask = session.dataTaskWithURL(url, completionHandler: {
                 data, response, error in
                 
+                self.state = .NotSearchYet
                 var success = false
                 if let error = error where error.code == -999 {
-                    return
-                } else if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 {
-                    if let data = data, dictionary = self.parseJSON(data) {
-                        self.searchResults.appendContentsOf(self.parseDictinory(dictionary))
-                        self.searchResults.sortInPlace(<)
-                        self.loading = false
-                        success = true
+                    return // serach was canceled
+                } else if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200, let data = data, dictionary = self.parseJSON(data) {
+                 
+                    searchResults.appendContentsOf(self.parseDictinory(dictionary))
+                    if searchResults.isEmpty {
+                        self.state = .NoFound
+                    } else {
+                        searchResults.sortInPlace(<)
+                        self.state = .Results(searchResults)
                     }
-                } else {
-                    self.nothingFound = true
-                    self.loading = false
+                    success = true
                 }
                 dispatch_async(dispatch_get_main_queue()){
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     completion(success)
                 }
             })
@@ -62,14 +84,9 @@ class Search {
         }
     }
     
-    private func urlWithSearchText(searchText: String, category: Int) -> NSURL {
-        let entityName: String
-        switch category {
-        case 1: entityName = "musicTrack"
-        case 2: entityName = "software"
-        case 3: entityName = "ebook"
-        default: entityName = ""
-        }
+    private func urlWithSearchText(searchText: String, category: Category) -> NSURL {
+        let entityName: String = category.entityName
+
         
         let escapedSearchText = searchText.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
         let urlInString = String(format: "http://itunes.apple.com/search?term=%@&limit=50&entity=%@", escapedSearchText, entityName)
@@ -111,23 +128,14 @@ class Search {
                 }
             }
         }
-        if searchResult.isEmpty {
-            self.nothingFound = true
-        }
         return searchResult
     }
     
-    func isLoading() -> Bool {
-        return loading
-    }
-    func isNoFound() -> Bool{
-        return nothingFound
-    }
     func getCount() -> Int {
-        if self.isLoading() || self.isNoFound() {
-            return 1
-        } else {
-            return searchResults.count
+        switch state{
+        case .NotSearchYet: return 0
+        case .Loading, .NoFound: return 1
+        case .Results(let searchResults): return searchResults.count
         }
     }
 }

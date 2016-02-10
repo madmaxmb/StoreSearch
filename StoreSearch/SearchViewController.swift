@@ -8,27 +8,27 @@
 
 import UIKit
 
-class TableViewCellIdentifiers {
-    static let searchResultCell = "SearchResultCell"
-    static let nothingFoundCell = "NothingFoundCell"
-    static let loadingCell = "LoadingCell"
-}
-
 class SearchViewController: UIViewController {
     
-    var search = Search()
-    
-    var dataTask: NSURLSessionDataTask?
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentControl: UISegmentedControl!
     
+    var search = Search()
     var landscapeViewController: LandscapeViewController?
+    
+    class TableViewCellIdentifiers {
+        static let searchResultCell = "SearchResultCell"
+        static let nothingFoundCell = "NothingFoundCell"
+        static let loadingCell = "LoadingCell"
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
 //         Do any additional setup after loading the view, typically from a nib.
+        tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 0, right: 0)
+        
         var cellNib = UINib(nibName: TableViewCellIdentifiers.searchResultCell, bundle: nil)
         tableView.registerNib(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.searchResultCell)
         
@@ -38,7 +38,6 @@ class SearchViewController: UIViewController {
         cellNib = UINib(nibName: TableViewCellIdentifiers.loadingCell, bundle: nil)
         tableView.registerNib(cellNib, forCellReuseIdentifier: TableViewCellIdentifiers.loadingCell)
         
-        tableView.contentInset = UIEdgeInsets(top: 108, left: 0, bottom: 0, right: 0)
         tableView.rowHeight = 80
     
         searchBar.becomeFirstResponder()
@@ -66,10 +65,10 @@ class SearchViewController: UIViewController {
     }
     
     func showLandscapeViewWithCoordinator(coordinator: UIViewControllerTransitionCoordinator){
-        
         precondition(landscapeViewController == nil)
         
-        landscapeViewController = storyboard!.instantiateViewControllerWithIdentifier("LandscapeViewController") as? LandscapeViewController
+        landscapeViewController = storyboard!.instantiateViewControllerWithIdentifier("LandscapeViewController")
+            as? LandscapeViewController
         
         if let controller = landscapeViewController {
             controller.search = search
@@ -96,7 +95,12 @@ class SearchViewController: UIViewController {
         if let controller = landscapeViewController {
             controller.willMoveToParentViewController(nil)
             
-            coordinator.animateAlongsideTransition({ _ in controller.view.alpha = 0.0}, completion: { _ in
+            coordinator.animateAlongsideTransition({ _ in
+                controller.view.alpha = 0.0
+                if self.presentedViewController != nil {
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }
+            }, completion: { _ in
                 controller.view.removeFromSuperview()
                 controller.removeFromParentViewController()
                 self.landscapeViewController = nil
@@ -105,7 +109,11 @@ class SearchViewController: UIViewController {
     }
     
     func showNetworkError() {
-        let alert = UIAlertController(title: "Whoops...", message: "There was an error reading from the iTunes Store. Please try again.", preferredStyle: .Alert)
+        let alert = UIAlertController(
+            title: "Whoops...",
+            message: "There was an error reading from the iTunes Store. Please try again.",
+            preferredStyle: .Alert)
+        
         let action = UIAlertAction(title: "Ok", style: .Default, handler: nil)
         alert.addAction(action)
         
@@ -119,14 +127,18 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func performSearch() {
-        search.performSearchForText(searchBar.text!, category: segmentControl.selectedSegmentIndex, completion: { success in
-            if !success{
-                self.showNetworkError()
-            }
-            self.tableView.reloadData()
-        })
-        tableView.reloadData()
-        searchBar.resignFirstResponder()
+        if let category = Search.Category(rawValue: segmentControl.selectedSegmentIndex) {
+            search.performSearchForText(searchBar.text!, category: category, completion: { success in
+                if !success{
+                    self.showNetworkError()
+                }
+                self.tableView.reloadData()
+                self.landscapeViewController?.searchResultReceived()
+            })
+            
+            tableView.reloadData()
+            searchBar.resignFirstResponder()
+        }
     }
 
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -139,9 +151,11 @@ extension SearchViewController: UISearchBarDelegate {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ShowDetail" {
-            let detailViewController = segue.destinationViewController as! DetailViewController
-            let indexPath = sender as! NSIndexPath
-            detailViewController.searchResult = search.searchResults[indexPath.row]
+            if case .Results(let list) = search.state{
+                let detailViewController = segue.destinationViewController as! DetailViewController
+                let indexPath = sender as! NSIndexPath
+                detailViewController.searchResult = list[indexPath.row]
+            }
         }
     }
 }
@@ -152,43 +166,42 @@ extension SearchViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        if search.isNoFound(){
-            return tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.nothingFoundCell, forIndexPath: indexPath)
-        }
-        
-        if search.isLoading(){
+        switch search.state {
+        case .NotSearchYet:
+            fatalError("Should never get here")
+            
+        case .Loading:
             let cell =  tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.loadingCell, forIndexPath: indexPath)
+            
             let spinner = cell.viewWithTag(100) as! UIActivityIndicatorView
             spinner.startAnimating()
             return cell
+            
+        case .NoFound:
+            return tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.nothingFoundCell,
+                forIndexPath: indexPath)
+            
+        case .Results(let list):
+            let cell = tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.searchResultCell, forIndexPath: indexPath) as! SearchResultCell
+            
+            cell.configureForSearchResult(list[indexPath.row])
+            return cell
         }
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.searchResultCell, forIndexPath: indexPath) as! SearchResultCell
-        
-        cell.configureForSearchResult(search.searchResults[indexPath.row])
-        return cell
     }
-    
+}
+extension SearchViewController: UITableViewDelegate {
+   
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         performSegueWithIdentifier("ShowDetail", sender: indexPath)
     }
     
     func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-        if search.searchResults.isEmpty {
+        switch search.state {
+        case .NoFound, .NotSearchYet, .Loading:
             return nil
-        } else {
-            if search.isNoFound() || search.isLoading() {
-                return nil
-            }
+        case .Results:
             return indexPath
         }
     }
-}
-extension SearchViewController: UITableViewDelegate {
-}
-
-func < (left: Result, right: Result) -> Bool {
-    return left.getName().localizedStandardCompare(right.getName()) == .OrderedAscending
 }
