@@ -13,7 +13,7 @@ class LandscapeViewController: UIViewController {
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var scrollView: UIScrollView!
     
-    var searchResults = [Result]()
+    var search = Search()
     private var firstTime = true
     private var downloadTasks = [NSURLSessionDownloadTask]()
     
@@ -65,7 +65,7 @@ class LandscapeViewController: UIViewController {
         
         if firstTime {
             firstTime = false
-            tileButtons(searchResults)
+            tileButtons(search)
         }
     }
     /*
@@ -78,7 +78,7 @@ class LandscapeViewController: UIViewController {
     }
     */
     
-    private func tileButtons(searchResults: [Result]){
+    private func tileButtons(search: Search){
         var columnsPerPage = 5
         var rowsPerPage = 3
         var itemWidth: CGFloat = 96
@@ -117,16 +117,21 @@ class LandscapeViewController: UIViewController {
         var column = 0
         var x = marginX
         
-        if !searchResults.isEmpty && searchResults[0].isNoFound() {
+        if search.isNoFound() {
             let noFound = UILabel(frame: CGRect(x: 0, y: 0, width: 60, height: 2000))
             noFound.text = "Nothing Found"
             noFound.sizeToFit()
             noFound.textColor = UIColor.whiteColor()
             noFound.center = scrollView.center
             scrollView.addSubview(noFound)
-            
+            pageControl.numberOfPages = 0
+        } else if search.isLoading(){
+            let loading = UIActivityIndicatorView()
+            loading.center = scrollView.center
+            scrollView.addSubview(loading)
+            pageControl.numberOfPages = 0
         } else {
-            for searchResult in searchResults {
+            for searchResult in search.searchResults {
             
                 let button = UIButton(type: .Custom)
                 button.setBackgroundImage(UIImage(named: "LandscapeButton"), forState: .Normal)
@@ -152,7 +157,7 @@ class LandscapeViewController: UIViewController {
             }
         }
         let buttonsPerPage = columnsPerPage * rowsPerPage
-        let numPages = 1 + (searchResults.count - 1) / buttonsPerPage
+        let numPages = 1 + (search.getCount() - 1) / buttonsPerPage
         
         pageControl.numberOfPages = numPages
         pageControl.currentPage = 0

@@ -16,7 +16,8 @@ class TableViewCellIdentifiers {
 
 class SearchViewController: UIViewController {
     
-    var searchResults = [Result]()
+    var search = Search()
+    
     var dataTask: NSURLSessionDataTask?
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -71,7 +72,7 @@ class SearchViewController: UIViewController {
         landscapeViewController = storyboard!.instantiateViewControllerWithIdentifier("LandscapeViewController") as? LandscapeViewController
         
         if let controller = landscapeViewController {
-            controller.searchResults = searchResults
+            controller.search = search
             
             controller.view.frame = view.bounds
             controller.view.alpha = 0.0
@@ -102,39 +103,6 @@ class SearchViewController: UIViewController {
             })
         }
     }
-
-    func performStoreRequestWithURL(url: NSURL) -> String? {
-        do {
-            return try String(contentsOfURL: url, encoding: NSUTF8StringEncoding)
-        } catch {
-            print("Downland error \(error)")
-            return nil
-        }
-    }
-    
-    func urlWithSearchText(searchText: String, category: Int) -> NSURL {
-        let entityName: String
-        switch category {
-            case 1: entityName = "musicTrack"
-            case 2: entityName = "software"
-            case 3: entityName = "ebook"
-            default: entityName = ""
-        }
-        
-        let escapedSearchText = searchText.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-        let urlInString = String(format: "http://itunes.apple.com/search?term=%@&limit=50&entity=%@", escapedSearchText, entityName)
-        let url = NSURL(string: urlInString)
-        return url!
-    }
-    
-    func parseJSON(data: NSData) -> [String: AnyObject]? {
-        do {
-            return try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject]
-        } catch {
-            print("JSON error: \(error)")
-            return nil
-        }
-    }
     
     func showNetworkError() {
         let alert = UIAlertController(title: "Whoops...", message: "There was an error reading from the iTunes Store. Please try again.", preferredStyle: .Alert)
@@ -143,39 +111,7 @@ class SearchViewController: UIViewController {
         
         presentViewController(alert, animated: true, completion: nil)
     }
-    
-    func parseDictinory(dictionary: [String: AnyObject]) -> [Result] {
-        guard let array = dictionary["results"] as? [AnyObject] else {
-            print("Exepted 'result' array")
-            return []
-        }
-        
-        var searchResult = [Result]()
-        for resultDict in array {
-            if let resultDict = resultDict as? [String: AnyObject] {
-                if let wrapperType = resultDict["wrapperType"] as? String {
-                    switch wrapperType {
-                    case "track":
-                        searchResult.append(TrackResult(dictionary: resultDict))
-                    case "audiobook":
-                        searchResult.append(AudioBookResult(dictionary: resultDict))
-                    case "software":
-                        searchResult.append(AppResult(dictionary: resultDict))
-                    default :
-                        break
-                    }
-                } else if let kind = resultDict["kind"] as? String where kind == "ebook"{
-                        searchResult.append(EBookResult(dictionary: resultDict))
-                }
-            }
-        }
-        if searchResult.isEmpty {
-            searchResult.append(NoFoundResult())
-        }
-        return searchResult
-    }
-    
-    
+
     deinit {
         print("deinit \(self)")
     }
@@ -183,44 +119,14 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func performSearch() {
-        if !searchBar.text!.isEmpty {
-            searchBar.resignFirstResponder()
-            searchResults.removeAll()
-            
-            dataTask?.cancel()
-            
-            searchResults.append(LoadingResult())
-            tableView.reloadData()
-
-            let url = urlWithSearchText(searchBar.text!, category: segmentControl.selectedSegmentIndex)
-            
-            let session = NSURLSession.sharedSession()
-            
-            dataTask = session.dataTaskWithURL(url, completionHandler: {
-                data, response, error in
-                if let error = error where error.code == -999 {
-                    return
-                } else if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 {
-                    if let data = data, dictionary = self.parseJSON(data) {
-                        self.searchResults.removeAll()
-                        self.searchResults.appendContentsOf(self.parseDictinory(dictionary))
-                        self.searchResults.sortInPlace(<)
-                        dispatch_async(dispatch_get_main_queue()) {
-                            self.tableView.reloadData()
-                        }
-                    }
-                } else {
-                    self.searchResults.removeAll()
-                    self.searchResults.append(NoFoundResult())
-                    dispatch_async(dispatch_get_main_queue()){
-                        self.tableView.reloadData()
-                        self.showNetworkError()
-                    }
-                }
-            })
-            dataTask?.resume()
-           
-        }
+        search.performSearchForText(searchBar.text!, category: segmentControl.selectedSegmentIndex, completion: { success in
+            if !success{
+                self.showNetworkError()
+            }
+            self.tableView.reloadData()
+        })
+        tableView.reloadData()
+        searchBar.resignFirstResponder()
     }
 
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -235,23 +141,23 @@ extension SearchViewController: UISearchBarDelegate {
         if segue.identifier == "ShowDetail" {
             let detailViewController = segue.destinationViewController as! DetailViewController
             let indexPath = sender as! NSIndexPath
-            detailViewController.searchResult = searchResults[indexPath.row]
+            detailViewController.searchResult = search.searchResults[indexPath.row]
         }
     }
 }
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        return search.getCount()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        if searchResults[indexPath.row].isNoFound(){
+        if search.isNoFound(){
             return tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.nothingFoundCell, forIndexPath: indexPath)
         }
         
-        if searchResults[indexPath.row].isLoad(){
+        if search.isLoading(){
             let cell =  tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.loadingCell, forIndexPath: indexPath)
             let spinner = cell.viewWithTag(100) as! UIActivityIndicatorView
             spinner.startAnimating()
@@ -260,7 +166,7 @@ extension SearchViewController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCellWithIdentifier(TableViewCellIdentifiers.searchResultCell, forIndexPath: indexPath) as! SearchResultCell
         
-        cell.configureForSearchResult(searchResults[indexPath.row])
+        cell.configureForSearchResult(search.searchResults[indexPath.row])
         return cell
     }
     
@@ -270,10 +176,10 @@ extension SearchViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-        if searchResults.isEmpty {
+        if search.searchResults.isEmpty {
             return nil
         } else {
-            if searchResults[indexPath.item].isNoFound() || searchResults[indexPath.item].isLoad() {
+            if search.isNoFound() || search.isLoading() {
                 return nil
             }
             return indexPath
