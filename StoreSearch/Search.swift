@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 class Search {
     
@@ -87,9 +88,12 @@ class Search {
     private func urlWithSearchText(searchText: String, category: Category) -> NSURL {
         let entityName: String = category.entityName
 
+        let locale = NSLocale.autoupdatingCurrentLocale()
+        let language = locale.localeIdentifier
+        let countryCode = locale.objectForKey(NSLocaleCountryCode) as! String
         
         let escapedSearchText = searchText.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-        let urlInString = String(format: "http://itunes.apple.com/search?term=%@&limit=50&entity=%@", escapedSearchText, entityName)
+        let urlInString = String(format: "http://itunes.apple.com/search?term=%@&limit=50&entity=%@&land=%@&country=%@", escapedSearchText, entityName, language, countryCode)
         let url = NSURL(string: urlInString)
         return url!
     }

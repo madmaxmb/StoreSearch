@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  StoreSearch
+
+  Created by Максим on 11.02.16.
+  Copyright © 2016 Maxim. All rights reserved.
+*/
+
+CFBundleDisplayName = "StoreSearch";
