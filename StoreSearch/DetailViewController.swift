@@ -23,10 +23,18 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var genreLable: UILabel!
     @IBOutlet weak var priceButton: UIButton!
     
-    var searchResult: Result!
+    var searchResult: Result! {
+        didSet {
+            if isViewLoaded(){
+                updateUI()
+            }
+        }
+    }
     var downloadTask: NSURLSessionDownloadTask?
     
     var dismissAnimationStyle = AnimationStyle.Fade
+    
+    var isPopUp = false
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
@@ -38,16 +46,26 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("close"))
+        if let displayName = NSBundle.mainBundle().localizedInfoDictionary?["CFBundleDisplayName"] as? String {
+            title = displayName
+        }
         
-        view.backgroundColor = UIColor.clearColor()
-        
-        view.tintColor = UIColor(red: 20/255, green: 160/255, blue: 160/255, alpha: 1)
         popupView.layer.cornerRadius = 10
-        gestureRecognizer.cancelsTouchesInView = false
-        gestureRecognizer.delegate = self
-        view.addGestureRecognizer(gestureRecognizer)
+        
+        if isPopUp {
+            let gestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("close"))
+            
+            gestureRecognizer.cancelsTouchesInView = false
+            gestureRecognizer.delegate = self
+            
+            view.tintColor = UIColor(red: 20/255, green: 160/255, blue: 160/255, alpha: 1)
+            
+            view.addGestureRecognizer(gestureRecognizer)
+            view.backgroundColor = UIColor.clearColor()
+        } else {
+            view.backgroundColor = UIColor(patternImage: UIImage(named: "LandscapeBackground")!)
+            popupView.hidden = true
+        }
         
         if searchResult != nil {
             updateUI()
@@ -107,6 +125,7 @@ class DetailViewController: UIViewController {
         if let url = searchResult.getArtworkImageURL100() {
             downloadTask = artworkImageView.loadImageWithUrl(url)
         }
+        popupView.hidden = false
     }
     deinit {
         print("deinit \(self)")
