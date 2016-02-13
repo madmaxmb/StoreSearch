@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MessageUI
 
 class DetailViewController: UIViewController {
     
@@ -127,6 +128,14 @@ class DetailViewController: UIViewController {
         }
         popupView.hidden = false
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "ShowMenu" {
+            let controller = segue.destinationViewController as! MenuViewController
+            controller.delegate = self
+        }
+    }
+    
     deinit {
         print("deinit \(self)")
         downloadTask?.cancel()
@@ -134,8 +143,23 @@ class DetailViewController: UIViewController {
 
 }
 
+extension DetailViewController: MenuViewControllerDelegate {
+    func menuViewControllerSendSupportEmail(controller: MenuViewController) {
+        dismissViewControllerAnimated(true) {
+            if MFMailComposeViewController.canSendMail() {
+                let controller = MFMailComposeViewController()
+                controller.setSubject(NSLocalizedString("Support Request", comment: "Email subject"))
+                
+                controller.setToRecipients(["noEmail@mail.ru"])
+                controller.mailComposeDelegate = self
+                controller.modalPresentationStyle = .FormSheet
+                self.presentViewController(controller, animated: true, completion: nil)
+            }
+        }
+    }
+}
+
 extension DetailViewController: UIViewControllerTransitioningDelegate {
-    @available(iOS 8.0, *)
     func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
         
         return DimmingPresentationController(presentedViewController: presented, presentingViewController: presenting)
@@ -158,5 +182,11 @@ extension DetailViewController: UIViewControllerTransitioningDelegate {
 extension DetailViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         return (touch.view === self.view)
+    }
+}
+
+extension DetailViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

@@ -148,6 +148,12 @@
                                             <constraint firstAttribute="width" constant="15" id="tw2-sd-jRQ"/>
                                         </constraints>
                                         <state key="normal" image="CloseButton"/>
+                                        <variation key="heightClass=compact-widthClass=regular">
+                                            <mask key="constraints">
+                                                <exclude reference="bPk-dL-5ns"/>
+                                                <exclude reference="tw2-sd-jRQ"/>
+                                            </mask>
+                                        </variation>
                                         <variation key="heightClass=regular-widthClass=regular">
                                             <mask key="constraints">
                                                 <exclude reference="bPk-dL-5ns"/>
@@ -295,6 +301,15 @@
                                         <exclude reference="wyo-7G-6uk"/>
                                     </mask>
                                 </variation>
+                                <variation key="heightClass=compact-widthClass=regular">
+                                    <mask key="subviews">
+                                        <exclude reference="Ali-Oc-pnd"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="7pa-ma-Efb"/>
+                                        <exclude reference="F3Q-I6-isl"/>
+                                    </mask>
+                                </variation>
                                 <variation key="heightClass=regular-widthClass=regular">
                                     <mask key="subviews">
                                         <exclude reference="Ali-Oc-pnd"/>
@@ -309,10 +324,20 @@
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="RJ1-er-udE" firstAttribute="centerX" secondItem="niY-6U-ege" secondAttribute="centerX" id="1UI-B7-8Tm"/>
-                            <constraint firstItem="RJ1-er-udE" firstAttribute="centerY" secondItem="niY-6U-ege" secondAttribute="centerY" id="Yj1-u1-1Px"/>
+                            <constraint firstItem="RJ1-er-udE" firstAttribute="centerY" secondItem="niY-6U-ege" secondAttribute="centerY" id="Yj1-u1-1Px">
+                                <variation key="heightClass=compact-widthClass=regular" constant="20"/>
+                            </constraint>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="CsW-p6-X9E"/>
+                    <navigationItem key="navigationItem" id="CsW-p6-X9E">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="hDk-xE-9c0">
+                            <connections>
+                                <segue destination="sCQ-ga-l4y" kind="popoverPresentation" identifier="ShowMenu" popoverAnchorBarButtonItem="hDk-xE-9c0" id="Ifh-hP-DQC">
+                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                </segue>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="artistNameLable" destination="Btd-eR-upe" id="CKX-sW-wuD"/>
                         <outlet property="artworkImageView" destination="dhD-Jf-mRB" id="rK3-5u-M0Z"/>
@@ -343,10 +368,10 @@
             </objects>
             <point key="canvasLocation" x="601" y="-325"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Menu View Controller-->
         <scene sceneID="hPI-1O-pwW">
             <objects>
-                <tableViewController id="sCQ-ga-l4y" sceneMemberID="viewController">
+                <tableViewController id="sCQ-ga-l4y" customClass="MenuViewController" customModule="StoreSearch" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="SIZ-Fq-knK">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -413,6 +438,7 @@
                             <outlet property="delegate" destination="sCQ-ga-l4y" id="kX9-hv-HQM"/>
                         </connections>
                     </tableView>
+                    <value key="contentSizeForViewInPopover" type="size" width="320" height="204"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aF4-mV-Xmu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
