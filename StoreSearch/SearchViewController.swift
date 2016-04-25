@@ -77,8 +77,6 @@ class SearchViewController: UIViewController {
         }
     }
     
-
-    
     func showLandscapeViewWithCoordinator(coordinator: UIViewControllerTransitionCoordinator){
         precondition(landscapeViewController == nil)
     
